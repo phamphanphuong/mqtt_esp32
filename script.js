@@ -1,6 +1,6 @@
 // --- Cấu hình MQTT (Đảm bảo khớp với ESP32 của bạn) ---
 const MQTT_BROKER_HOST = '06e8b6781884440da3ee8bcff720af3f.s1.eu.hivemq.cloud';
-const MQTT_BROKER_PORT = 8883; // Sử dụng cổng 8883 cho SSL/TLS
+const MQTT_BROKER_PORT = 8884; // Sử dụng cổng 8884 cho WebSocket Secure
 const MQTT_USERNAME = 'doremon';
 const MQTT_PASSWORD = 'Doremon123';
 const MQTT_CLIENT_ID = 'WebDashboard_Phuong_' + Math.random().toString(16).substr(2, 8); // ID duy nhất
@@ -84,26 +84,29 @@ function updateButtonStatus(buttonId, status) {
     logToDashboard(`Button ${buttonId} status: ${status}`);
 }
 
-
 // --- Kết nối MQTT ---
 function connectMqtt() {
     updateMqttStatus('Connecting');
 
-    // Cấu hình kết nối SSL/TLS cho MQTT.js
+    // Thử kết nối với WebSocket Secure trước (cổng 8884)
+    tryConnectWithConfig('wss', MQTT_BROKER_PORT);
+}
+
+// Hàm thử kết nối với các cấu hình khác nhau
+function tryConnectWithConfig(protocol, port) {
+    logToDashboard(`Trying to connect with ${protocol}://${MQTT_BROKER_HOST}:${port}/mqtt`);
+
+// Cấu hình kết nối WebSocket cho MQTT.js trong trình duyệt
     const connectOptions = {
         clean: true, // Bắt đầu một session mới
         keepalive: 60, // Thời gian giữ kết nối (giây)
         clientId: MQTT_CLIENT_ID,
         username: MQTT_USERNAME,
-        password: MQTT_PASSWORD,
-        // Cần thiết cho SSL/TLS
-        protocol: 'mqtts', // Sử dụng mqtts cho cổng 8883 (SSL/TLS)
-        port: MQTT_BROKER_PORT,
-        rejectUnauthorized: false // Đặt là true nếu bạn có chứng chỉ CA và muốn xác thực chặt chẽ
-        // Đặt false để bỏ qua xác thực chứng chỉ CA nếu gặp lỗi
+        password: MQTT_PASSWORD
     };
 
-    client = mqtt.connect(`mqtts://${MQTT_BROKER_HOST}`, connectOptions);
+    // Kết nối sử dụng WebSocket
+    client = mqtt.connect(`${protocol}://${MQTT_BROKER_HOST}:${port}/mqtt`, connectOptions);
 
     // --- Xử lý các sự kiện MQTT ---
 
@@ -150,11 +153,24 @@ function connectMqtt() {
         logToDashboard('MQTT: Attempting to reconnect...');
     });
 
+    client.on('offline', () => {
+        updateMqttStatus('Offline');
+        logToDashboard('MQTT: Client went offline.');
+    });
+
     client.on('error', (err) => {
         updateMqttStatus('Disconnected');
         logToDashboard(`MQTT Error: ${err.message}`);
-        client.end(); // Ngắt kết nối để thử lại
-        setTimeout(connectMqtt, 5000); // Thử kết nối lại sau 5 giây
+
+        // Thử cấu hình dự phòng nếu lỗi
+        if (protocol === 'wss' && port === 8884) {
+            logToDashboard('Trying fallback connection with ws://8000...');
+            client.end();
+            setTimeout(() => tryConnectWithConfig('ws', 8000), 2000);
+        } else {
+            client.end();
+            setTimeout(connectMqtt, 5000); // Thử kết nối lại sau 5 giây
+        }
     });
 
     client.on('close', () => {
