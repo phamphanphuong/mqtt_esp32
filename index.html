@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32-C3 IoT Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>ESP32-C3 IoT Dashboard</h1>
+
+        <div class="connection-status">
+            <p>MQTT Status: <span id="mqttStatus" class="disconnected">Disconnected</span></p>
+        </div>
+
+        <div class="control-section">
+            <h2>LED Control</h2>
+            <div class="led-control">
+                <label for="led1Toggle">LED 1:</label>
+                <button id="led1On" class="btn on">ON</button>
+                <button id="led1Off" class="btn off">OFF</button>
+                <span id="led1Status" class="status-indicator unknown">?</span>
+            </div>
+            <div class="led-control">
+                <label for="led2Toggle">LED 2:</label>
+                <button id="led2On" class="btn on">ON</button>
+                <button id="led2Off" class="btn off">OFF</button>
+                <span id="led2Status" class="status-indicator unknown">?</span>
+            </div>
+        </div>
+
+        <div class="status-section">
+            <h2>Button Status</h2>
+            <div class="button-status">
+                <p>Button 1: <span id="button1Indicator" class="status-indicator idle">IDLE</span></p>
+                <p>Button 2: <span id="button2Indicator" class="status-indicator idle">IDLE</span></p>
+            </div>
+        </div>
+
+        <div class="log-section">
+            <h2>MQTT Log</h2>
+            <div id="mqttLog" class="log-box"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

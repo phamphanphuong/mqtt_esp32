@@ -1,0 +1,139 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+.container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+}
+
+h1,
+h2 {
+    text-align: center;
+    color: #0056b3;
+    margin-bottom: 20px;
+}
+
+.connection-status,
+.control-section,
+.status-section,
+.log-section {
+    margin-bottom: 25px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.connection-status p {
+    text-align: center;
+    font-weight: bold;
+    margin: 0;
+}
+
+.status-indicator {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+.connected {
+    background-color: #28a745;
+}
+
+/* Green */
+.disconnected {
+    background-color: #dc3545;
+}
+
+/* Red */
+.unknown {
+    background-color: #ffc107;
+}
+
+/* Yellow */
+.on {
+    background-color: #28a745;
+}
+
+.off {
+    background-color: #dc3545;
+}
+
+.idle {
+    background-color: #6c757d;
+}
+
+/* Grey */
+.pressed {
+    background-color: #007bff;
+}
+
+/* Blue */
+
+
+.led-control,
+.button-status p {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+.led-control label {
+    flex: 1;
+    font-weight: bold;
+}
+
+.led-control .btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    margin-left: 10px;
+    transition: background-color 0.2s;
+}
+
+.led-control .btn.on {
+    background-color: #28a745;
+    color: white;
+}
+
+.led-control .btn.off {
+    background-color: #dc3545;
+    color: white;
+}
+
+.led-control .btn:hover {
+    opacity: 0.9;
+}
+
+.log-box {
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9em;
+    white-space: pre-wrap;
+    /* Preserve whitespace and wrap long lines */
+    word-wrap: break-word;
+    /* Break long words */
+}
